@@ -113,7 +113,7 @@ public class Driver
                 boolean tieneInyecciones = false;
                 pw = new PrintWriter(source);
                 String paquete = objetivo.getPackage().getName();
-
+                    
                 // Se agregan todas las importaciones necesarias
                 pw.println("package "+paquete+";");
                 BufferedReader br = new BufferedReader(new FileReader("./src/"+paquete.replace(".","/")+"/"+objetivo.getSimpleName()+".java"));
@@ -303,8 +303,7 @@ public class Driver
                 // Se verifica si el método tiene la anotación Log y corresponde con el nombre del metodo pasado como párametro
                 if (metodo.isAnnotationPresent(Log.class)
                         && metodo.getName().equalsIgnoreCase(m)) {
-                   
-                        String logTxt = new Date() + " - Clase: " + c.getName() +  " - Método: "  + m;
+                                      String logTxt = new Date() + " - Clases: " + c.getName() +  " - Método: "  + m; //cambio de prueba
                         System.out.println(logTxt);
                         pwLog.println(logTxt);
                         pwLog.flush();               
