@@ -257,6 +257,15 @@ public class Driver
                 // Se inicializan los atributos afectador por las anotaciones Init
                 CodigoInserciones.Init(objeto,c,c.getAnnotation(Init.class),null);
             }
+            //Se verifica si la clase tiene la anotación NoValorDefecto
+            if(c.getInterfaces().length>0&&c.getInterfaces()[0].equals("mundo.Revisable")) {
+                Class i = c.getInterfaces()[0];
+                for(Method m: i.getMethods()){
+                    if(m.isAnnotationPresent(NoValorDefecto.class)){
+                        System.out.println("Este método no debe recibir valores por defecto");
+                    }
+                }            
+            }
             
             for (Field f : c.getDeclaredFields()) {
                 // Se instancian los atributos anotados con Cargar
@@ -273,8 +282,9 @@ public class Driver
                     m.setAccessible(true);
                     m.invoke(objeto, null);
                     break;
-                }
+                }       
             }
+            
             
             return objeto;
         } catch (Exception e) {

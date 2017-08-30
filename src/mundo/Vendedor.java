@@ -18,7 +18,7 @@ import anotaciones.PostConstructor;
  * Entidad que representa a un vendedor de MLA
  */
 @Init(String="-- Vacio --")
-public class Vendedor
+public class Vendedor implements Revisable
 {
 
     /**
@@ -68,7 +68,10 @@ public class Vendedor
     }
 
     public void setNombres(String nombres) {
+        if(revisarCadena(nombres))
         this.nombres = nombres;
+        else
+            System.out.println("El nuevo nombre no puede ser vacío");
     }
     
     public int getId() {
@@ -78,4 +81,37 @@ public class Vendedor
     protected void setId(int id) {
         this.id = id;
     }   
+
+    /*
+    Implementaciones de métodos de la interfaz Revisable
+    */
+    @Override
+    public boolean revisarCadena(String s) {
+        if(s.equals("")){
+            System.out.println("Esta cadena está vacía");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean revisarEntero(int i) {
+        if(i<0){
+            System.out.println("El entero es menor a cero");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean revisarFlotante(Float f) {
+        if(f<0){
+            System.out.println("Este flotante es cero");
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
