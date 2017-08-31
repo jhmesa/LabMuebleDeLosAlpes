@@ -279,9 +279,21 @@ public class Driver
             for (Method m : c.getDeclaredMethods()) {
                 // Se invocan el método
                 if (m.isAnnotationPresent(PostConstructor.class)) {
-                    m.setAccessible(true);
+                    /*m.setAccessible(true);
                     m.invoke(objeto, null);
-                    break;
+                    break;*/
+                    
+                    // se realiza modificación para que la anotación PostConstructor
+                    // pueda ser utilizado mas de una vez. por otro lado se incluye 
+                    // llenado de la propiedad setSexo con el valor solicitado
+                    if(m.getName().equals("setSexo")){
+                        m.setAccessible(true);
+                        m.invoke(objeto, "-- Escriba sexo --");
+                    }
+                    else {
+                        m.setAccessible(true);
+                        m.invoke(objeto, null);
+                    }
                 }       
             }
             

@@ -59,6 +59,7 @@ public class Vendedor implements Revisable
         return sexo;
     }
 
+    @PostConstructor
     public void setSexo(String sexo) {
         this.sexo = sexo;
     }
