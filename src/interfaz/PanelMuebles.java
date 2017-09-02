@@ -95,13 +95,12 @@ public class PanelMuebles extends JPanel implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String metodo = "";
+     
         if(e.getActionCommand().equals(NUEVO)){
             // Se crea un nuevo mueble y se añade al modelo de la tabla de vendedores
             Mueble c = manager.nuevoMueble();            
             Object[] data = {c.getId(),""+c.getNombre(),c.getPrecio()};
             dtmMuebles.addRow(data);
-            metodo = "nuevoMueble";
         }
         else if(e.getActionCommand().equals(ELIMINAR)){
             int s = tablaMuebles.getSelectedRow();
@@ -111,7 +110,6 @@ public class PanelMuebles extends JPanel implements ActionListener{
                 dtmMuebles.removeRow(s);
                 tablaMuebles.revalidate();                
             }
-            metodo = "eliminarMueble";
         }
         else if(e.getActionCommand().equals(REINICIAR)){
             int s = tablaMuebles.getSelectedRow();
@@ -123,9 +121,7 @@ public class PanelMuebles extends JPanel implements ActionListener{
                 dtmMuebles.setValueAt(m.getNombre(),s,1);
                 dtmMuebles.setValueAt(m.getPrecio(),s,2);                
             }
-            metodo = "findMueble";
         }
-        Driver.imprimirLog(ManejadorMuebles.class, metodo);
     }
 
     /**

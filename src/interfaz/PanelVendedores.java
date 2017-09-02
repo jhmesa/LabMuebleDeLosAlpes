@@ -88,14 +88,13 @@ public class PanelVendedores extends JPanel implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e){
-        String metodo = "";
+       
         if(e.getActionCommand().equals(NUEVO)){
             // Se crea un nuevo vendedor a traves del manejador
             Vendedor c = manager.nuevoVendedor();
             Object[] data = {c.getId(),c.getNombres(),c.getApellidos(),c.getSexo()};
             // Se añade el nuevo vendedor al modelo de la tabla de vendedores
             dtmVendedores.addRow(data);
-            metodo = "nuevoVendedor";
         }
         else if(e.getActionCommand().equals(ELIMINAR)){
             int s = tablaVendedores.getSelectedRow();
@@ -105,9 +104,7 @@ public class PanelVendedores extends JPanel implements ActionListener{
                 dtmVendedores.removeRow(s);
                 tablaVendedores.revalidate();
             }
-            metodo = "eliminarVendedor";
         }
-        Driver.imprimirLog(ManejadorVendedores.class, metodo);
     }
 
     /**

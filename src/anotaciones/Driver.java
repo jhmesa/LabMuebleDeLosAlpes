@@ -40,7 +40,7 @@ public class Driver
      * Anotaciones que tienen inserciones de codigo. Toda anotación que tenga un método que la
      * represente en la clase CodigoInserciones debe estar en este arreglo para que sea efectiva
      */
-    public static Class[] anotacionesInsercion = {Init.class};
+    public static Class[] anotacionesInsercion = {Init.class, Log.class};
 
     /**
      * Archivo de log
@@ -113,7 +113,7 @@ public class Driver
                 boolean tieneInyecciones = false;
                 pw = new PrintWriter(source);
                 String paquete = objetivo.getPackage().getName();
-                    
+
                 // Se agregan todas las importaciones necesarias
                 pw.println("package "+paquete+";");
                 BufferedReader br = new BufferedReader(new FileReader("./src/"+paquete.replace(".","/")+"/"+objetivo.getSimpleName()+".java"));
@@ -124,7 +124,7 @@ public class Driver
                 pw.println("import anotaciones.*;");
                 pw.println("import java.lang.reflect.*;");
                 pw.println("import java.lang.annotation.Annotation;");
-
+                               
                 br.close();
 
                 // El proxy extiende del objetivo
@@ -155,7 +155,8 @@ public class Driver
 
                         // Se verifica e inyecta el código de cada anotación presente
                         for(Class annotation:anotacionesInsercion){
-                            if(method.isAnnotationPresent(annotation)){
+                            if(method.isAnnotationPresent(annotation)
+                                    && method.isAnnotationPresent(Init.class)){
                                 pw.println("{try{");
                                 pw.print("Method meth = "+objetivo.getSimpleName()+".class.getMethod(\""+method.getName()+"\",new Class[]{");
                                 for(int e=0;e<para.length;e++)pw.print(getRealType(para[e])+(e==para.length-1?"":","));
@@ -170,6 +171,11 @@ public class Driver
                                 pw.println("ex.printStackTrace();");
                                 pw.println("}}");
 
+                            } else if(method.isAnnotationPresent(annotation)
+                                    && method.isAnnotationPresent(Log.class)){
+                                
+                                pw.println("Driver.imprimirLog(" + objetivo.getSimpleName()+ ".class, \""+ method.getName() + "\");");
+                                
                             }
                         }
 
@@ -190,12 +196,18 @@ public class Driver
                 // Si el objetivo tiene inyecciones, el proxy se compila y se carga dinámicamente
                 if (tieneInyecciones) {
                     String libs= "";
-                    for(File jar :librerias.listFiles()){
+                    // Se comenta por que estaba dando error y no compilaba las clases proxy
+                    /*for(File jar :librerias.listFiles()){
+                        System.out.println("libs" + libs);
                         libs+="\""+librerias.getCanonicalPath()+"\\"+jar.getName()+"\";";
-                    }
+                        
+                        
+                    }*/
+                    
                     // Se compila, para esto es necesario el JDK
                     Process b = Runtime.getRuntime().exec("javac -d \"" + classes.getCanonicalPath() + "\" -classpath "+libs+"\"" + classpa.getCanonicalPath() + "\" \"" + source.getCanonicalPath() + "\"");
 
+                    
                     BufferedReader error = new BufferedReader(new InputStreamReader(b.getErrorStream()));
                     for(String h;(h=error.readLine())!=null;)System.out.println(h);
                     error = new BufferedReader(new InputStreamReader(b.getInputStream()));
@@ -278,11 +290,7 @@ public class Driver
             // Se verifica si la clase tiene métodos  con la anotación PostConstructor
             for (Method m : c.getDeclaredMethods()) {
                 // Se invocan el método
-                if (m.isAnnotationPresent(PostConstructor.class)) {
-                    /*m.setAccessible(true);
-                    m.invoke(objeto, null);
-                    break;*/
-                    
+                if (m.isAnnotationPresent(PostConstructor.class)) {                                   
                     // se realiza modificación para que la anotación PostConstructor
                     // pueda ser utilizado mas de una vez. por otro lado se incluye 
                     // llenado de la propiedad setSexo con el valor solicitado
